@@ -1734,7 +1734,7 @@ seleccionador_presupuesto(PRESUPUESTO):- (
 ).
 
 presupuestoMenor(PRESUPUESTO):-nl,
-	writeln('Calificacion minima del hotel: '),
+	writeln('Calificacion: '),
 	read(CALIFICACION),
 	writeln('Que distancia maxima deseas recorrer en tu viaje?'),
 	read(DISTANCIA),
@@ -1753,32 +1753,6 @@ presupuestoMenor(PRESUPUESTO):-nl,
 	writeln('Llegas en automovil? S/N'),
 	read(AUTO),
 	motordedecisiones(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
-	
-presupuestoMayor(PRESUPUESTO):-nl,
-	writeln('Cantidad de estrellas del hotel: '),
-	read(ESTRELLAS),
-	writeln('Desea chef para su estadia? S/N'),
-	read(CHEF),
-	writeln('Que clima desea para su destino?'),
-	write('tropical\ncalor\nfrio\ntemplado'),nl,
-	read(CLIMA),
-	writeln('Para cuantas personas es la reserva?'),
-	read(PERSONAS),
-	writeln('Cuantos tiempos de comida deseas realizar en el hotel?'),
-	read(TIEMPOS),
-	writeln('Cuantos dias deseas hospedarte?'),
-	read(DIASHOSPEDAJE),nl,
-	writeln('Que tipo de habitacion deseas para tu reserva?'),
-	writeln('1. Simple\n2. Doble\n'),
-	read(TIPOHABITACION),
-	writeln('Llegas en automovil? S/N'),
-	read(AUTO),
-	motordedecisionesmayor(PRESUPUESTO,ESTRELLAS,CHEF,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
-	
-motordedecisionesmayor(PRESUPUESTO,ESTRELLAS,CHEF,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):- (
-	(CHEF == 's') -> inferenciaMayorConChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO);
-	(CHEF == 'n') -> inferenciaMayorSinChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
-).
 
 motordedecisiones(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):- (
 	inferencia1(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
@@ -1799,59 +1773,18 @@ registro(_,_,Idhot,_,_,Rop),
 (AHORROS is PRESUPUESTO - CostoTotal),
 /*condiciones */
 
+writeln("Clima: 		~a",[Cdep]).
+writeln("Costo total: 	~a",[CostoTotal]).
+writeln("Distancia:	    ~a",[Dhotel]).
+writeln("Calificacion:  ~a",[Rop]).
+writeln("Ahorro:	    ~a",[AHORROS]).
+
 CLIMA == Cdep,
 CostoTotal =< PRESUPUESTO,
-Dhotel =< DISTANCIA,
+DISTANCIA =< Dhotel,
 CALIFICACION >= Rop,
 
 mostrarinferencia(Nhotel, Ndep, Dirhotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS).
-
-
-inferenciaMayorConChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):-
-/*llamado de tablas*/
-departamento(IDdep,Ndep,_,_,Cdep),
-hotel(Idhot,Nhotel,Dirhotel,Ehot,Hsimple,Hdoble,Pcomida,IDdep,Dhotel),
-registro(_,_,Idhot,_,_,_),
-trabajador(_,Ntrab,Ptrab,Idhot),
-
-/*operatoria */
-(AUTO == 'n' -> CostoGasolina is 0; AUTO == 's' -> CostoGasolina is Dhotel*12.50 * 2),
-(CostoComida is TIEMPOS * Pcomida * PERSONAS * DIASHOSPEDAJE),
-(TIPOHAB == 'simple' -> CostoHabitacion is Hsimple * PERSONAS * DIASHOSPEDAJE; TIPOHAB == 'doble' -> CostoHabitacion is Hdoble * PERSONAS * DIASHOSPEDAJE),
-
-(CostoTotal is CostoGasolina + CostoComida + CostoHabitacion),
-(AHORROS is PRESUPUESTO - CostoTotal),
-/*condiciones */
-
-CLIMA == Cdep,
-CostoTotal =< PRESUPUESTO,
-ESTRELLAS == Ehot,
-Ptrab == 'chef',
-
-mostrarinferenciaMayor(Nhotel, Ndep, Dirhotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS, Ntrab).
-
-
-inferenciaMayorSinChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):-
-/*llamado de tablas*/
-departamento(IDdep,Ndep,_,_,Cdep),
-hotel(Idhot,Nhotel,Dirhotel,Ehot,Hsimple,Hdoble,Pcomida,IDdep,Dhotel),
-registro(_,_,Idhot,_,_,_),
-
-/*operatoria */
-(AUTO == 'n' -> CostoGasolina is 0; AUTO == 's' -> CostoGasolina is Dhotel*12.50 * 2),
-(CostoComida is TIEMPOS * Pcomida * PERSONAS * DIASHOSPEDAJE),
-(TIPOHAB == 'simple' -> CostoHabitacion is Hsimple * PERSONAS * DIASHOSPEDAJE; TIPOHAB == 'doble' -> CostoHabitacion is Hdoble * PERSONAS * DIASHOSPEDAJE),
-
-(CostoTotal is CostoGasolina + CostoComida + CostoHabitacion),
-(AHORROS is PRESUPUESTO - CostoTotal),
-/*condiciones */
-
-CLIMA == Cdep,
-CostoTotal =< PRESUPUESTO,
-ESTRELLAS == Ehot,
-
-mostrarinferenciaMayor(Nhotel, Ndep, Dirhotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS, '').
-
 
 mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS):-nl,
 	writeln('-----------------------------------'),
@@ -1867,20 +1800,6 @@ mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoC
 	\n Ahorro:								~a
 	',[Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS]), fail.
 
-mostrarinferenciaMayor(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS, Trabajador):-nl,
-	writeln('-----------------------------------'),
-	format('Segun los parametros ingresados, estas son las mejores ociones que
-	\n que mejor se ajustan a usted: \n
-	\n Hotel:								~a
-	\n Departamento:						~a
-	\n Direccion:							~a
-	\n Gasolina:							~a
-	\n Costo Habitacion:					~a
-	\n Alimentacion:						~a
-	\n Costo total:							~a
-	\n Ahorro:								~a
-	\n Usted sera atendido por el chef:     ~a
-	',[Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS, Trabajador]), fail.
 
  salir:- nl,
 	write('Hasta pronto').
