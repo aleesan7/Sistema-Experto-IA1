@@ -1727,6 +1727,16 @@ menu_presupuesto:-nl,
 	writeln('Ingrese el presupuesto que usted tiene para su viaje'),
 	read(PRESUPUESTO),
 	seleccionador_presupuesto(PRESUPUESTO),nl.
+	
+menu_idioma:-nl,
+	writeln('Seleccione el idioma que usted desea: '),
+	writeln('1. Español'),
+	writeln('2. Ingles'),
+	writeln('3. Katchikel'),
+	writeln('4. Ketchi'),
+	read(IDIOMA),
+	camino_idioma(IDIOMA),
+	nl.
 
 seleccionador_presupuesto(PRESUPUESTO):- (
 	PRESUPUESTO >= 5000 -> presupuestoMayor(PRESUPUESTO);
@@ -1775,16 +1785,37 @@ presupuestoMayor(PRESUPUESTO):-nl,
 	read(AUTO),
 	motordedecisionesmayor(PRESUPUESTO,ESTRELLAS,CHEF,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
 	
+camino_idioma(IDIOMA):-nl,
+	writeln('Que clima desea para su destino?'),
+	write('tropical\ncalor\nfrio\ntemplado'),nl,
+	read(CLIMA),
+	writeln('Para cuantas personas es la reserva?'),
+	read(PERSONAS),
+	writeln('Cuantos tiempos de comida deseas realizar en el hotel?'),
+	read(TIEMPOS),
+	writeln('Cuantos dias deseas hospedarte?'),
+	read(DIASHOSPEDAJE),nl,
+	writeln('Que tipo de habitacion deseas para tu reserva?'),
+	writeln('1. Simple\n2. Doble\n'),
+	read(TIPOHABITACION),
+	writeln('Llegas en automovil? S/N'),
+	read(AUTO),
+	motordecisionesporidioma(IDIOMA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
+	
 motordedecisionesmayor(PRESUPUESTO,ESTRELLAS,CHEF,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):- (
 	(CHEF == 's') -> inferenciaMayorConChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO);
 	(CHEF == 'n') -> inferenciaMayorSinChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
 ).
 
 motordedecisiones(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):- (
-	inferencia1(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
+	inferenciaMenor(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
 ).
 
-inferencia1(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):-
+motordecisionesporidioma(IDIOMA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO):- (
+	inferenciaIdioma(IDIOMA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO)
+).
+
+inferenciaMenor(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):-
 /*llamado de tablas*/
 departamento(IDdep,Ndep,_,_,Cdep),
 hotel(Idhot,Nhotel,Dirhotel,_,Hsimple,Hdoble,Pcomida,IDdep,Dhotel),
@@ -1851,6 +1882,27 @@ CostoTotal =< PRESUPUESTO,
 ESTRELLAS == Ehot,
 
 mostrarinferenciaMayor(Nhotel, Ndep, Dirhotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS, '').
+
+
+inferenciaIdioma(IDIOMA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO):-
+/*llamado de tablas*/
+departamento(IDdep,Ndep,_,Idep,Cdep),
+hotel(_,Nhotel,DirHotel,_,Hsimple,Hdoble,Pcomida,IDdep,Dhotel),
+
+/*operatoria */
+(AUTO == 'n' -> CostoGasolina is 0; AUTO == 's' -> CostoGasolina is Dhotel*12.50 * 2),
+(CostoComida is TIEMPOS * Pcomida * PERSONAS * DIASHOSPEDAJE),
+(TIPOHABITACION == 'simple' -> CostoHabitacion is Hsimple * PERSONAS * DIASHOSPEDAJE; TIPOHABITACION == 'doble' -> CostoHabitacion is Hdoble * PERSONAS * DIASHOSPEDAJE),
+
+(CostoTotal is CostoGasolina + CostoComida + CostoHabitacion),
+/*(AHORROS is PRESUPUESTO - CostoTotal),
+condiciones */
+
+IDIOMA == Idep,
+CLIMA == Cdep,
+/*CostoTotal =< PRESUPUESTO,*/
+
+mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, 'N/A').
 
 
 mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS):-nl,
