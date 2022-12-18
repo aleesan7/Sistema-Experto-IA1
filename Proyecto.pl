@@ -1701,7 +1701,7 @@ inicio:-nl,
 
  opcion_seleccionada(X):- (
 	X == 1 -> menu;
-	X == 2 -> reporte_menu;
+	X == 2 -> menu_reportes;
 	X == 3 -> salir
  ).
 
@@ -1714,6 +1714,23 @@ inicio:-nl,
 	read(OPCION),
 	opcion_caminos(OPCION),
 	nl.
+	
+menu_reportes:-nl,
+	writeln('Ingrese el numero de reporte que desea generar:'),
+	writeln('1. Nombre y nacionalidad de clientes nacidos en Europa con opiniones mayores de 5'),
+	writeln('2. Nombre y estado civil de clientes con reservaciones en hoteles con mas de 4 estrellas'),
+	writeln('3. Nombre de Administradores en hoteles con valoraciones mayor o igual que 5'),
+	writeln('4. Departamentos y hotel con más reservaciones'),
+	writeln('5. Nombre y dirección de hoteles que recibieron a clientes casados'),
+	writeln('6. Nombre de clientes extranjeros hospedados en departamentos de habla katchikel'),
+	writeln('7. Nombre de Hotel, departamento, idioma y Nombre de clientes con opiniones mayores o igual que 7 y estadías mayores o igual a 3 días'),
+	writeln('8. Nombre País y Nombre de Hotel de clientes extranjeros hospedados en departamentos de habla ingles'),
+	writeln('9. País con el numero más grande de turistas que reservo en Peten'),
+	writeln('10. Nombre de Hotel y dirección de hoteles que recibieron a clientes casados, que tengan opiniones mayores de 6 por personas con mínimo de 3 dias de estadia'),
+	writeln('11. Regresar'),
+	read(OPCION),
+	decision_reportes(OPCION),
+	nl.
 
 opcion_caminos(OPCION_CAMINO):- (
 	OPCION_CAMINO == 1 -> menu_presupuesto;
@@ -1722,6 +1739,172 @@ opcion_caminos(OPCION_CAMINO):- (
 	OPCION_CAMINO == 4 -> menu_clima;
 	OPCION_CAMINO == 5 -> inicio
 ).
+
+decision_reportes(OP_REPORTE):-(
+	OP_REPORTE=1->reporte_1;
+	OP_REPORTE=2->reporte_2;
+	OP_REPORTE=3->reporte_3;
+	OP_REPORTE=4->reporte_4;
+	OP_REPORTE=5->reporte_5;
+	OP_REPORTE=6->reporte_6;
+	OP_REPORTE=7->reporte_7;
+	OP_REPORTE=8->reporte_8;
+	OP_REPORTE=9->reporte_9;
+	OP_REPORTE=10->reporte_10;
+	OP_REPORTE=11->inicio
+).
+
+reporte_1:-nl,
+  writeln('Reporte 1 - Nombre y nacionalidad de clientes nacidos en Europa con opiniones mayores de 5: '),
+  write('|		Nombre			'),write('|	Nacionalidad	|'),
+  nl,
+  writeln('-----------------------------------------------------------'),
+  cliente(REP1_CLIENTEID,REP1_NOMBRE,REP1_APPELLIDO,REP1_PAIS,_,_),
+  registro(_,REP1_CLIENTEID,_,_,_,REP1_OPINION), 
+  
+  REP1_OPINION >= 5,
+  (REP1_PAIS == 'espaniola';REP1_PAIS == 'italia';REP1_PAIS == 'holanda';REP1_PAIS == 'turquia';REP1_PAIS == 'suiza';
+  REP1_PAIS == 'irlanda';REP1_PAIS == 'hungria';REP1_PAIS == 'polonia';REP1_PAIS == 'inglaterra'),
+  
+  write('|		'),write(REP1_NOMBRE),write(' '),write(REP1_APPELLIDO),write('			|	'),write(REP1_PAIS),write('		 |'),nl,
+  fail;
+  writeln('----------------------FIN REPORTE 1------------------------'),
+  nl,
+  menu_reportes.
+  
+reporte_2:-nl,
+	writeln('Reporte 2 - Nombre y estado civil de clientes con reservaciones en hoteles con mas de 4 estrellas: '),
+	write('|		Nombre			'),write('|	Estado civil	|'),
+	nl,
+	writeln('-----------------------------------------------------------'),
+	cliente(IdCliente,REP1_NOMBRE,REP1_APPELLIDO,_,_,Ecivil),
+	hotel(Idhot,_,_,Ehot,_,_,_,_,_),
+	registro(_,IdCliente,Idhot,_,_,_),
+	
+	Ehot > 4,
+	
+	write('|		'),write(REP1_NOMBRE),write(' '),write(REP1_APPELLIDO),write('			|	'),write(Ecivil),write('		 |'),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 2------------------------'),
+	nl,
+	menu_reportes.
+	
+reporte_3:-nl,
+	 write('Reporte 3 - Nombre de Administradores en hoteles con valoraciones mayor o igual que 5:'),
+	nl,nl,
+	trabajador(IdTrab,REP4_NOMBRE,REP4_CARGO,REP4_HOTELID),
+	registro(_,_,REP4_HOTELID,_,_,REP4_OPINION),
+	IdTrab>0,
+	REP4_CARGO = 'administrador',
+	REP4_OPINION >= 5,
+	write('* Nombre: '),write(REP4_NOMBRE),write('.'),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 3------------------------'),
+	nl,
+	menu_reportes.
+	
+reporte_4:-nl,
+	/*write('Reporte 4 - Departamentos y hotel con más reservaciones:'),
+	nl,nl,
+	trabajador(IdTrab,REP4_NOMBRE,REP4_CARGO,REP4_HOTELID),
+	registro(_,_,REP4_HOTELID,_,_,REP4_OPINION),
+	IdTrab>0,
+	REP4_CARGO = 'administrador',
+	REP4_OPINION >= 5,
+	write('* Nombre: '),write(REP4_NOMBRE),write('.'),nl,
+	fail;*/
+	writeln('----------------------FIN REPORTE 4------------------------'),
+	nl,
+	menu_reportes.
+	
+reporte_5:-nl,
+	write('Reporte 5 - Nombre y dirección de hoteles que recibieron a clientes casados:'),
+	nl,nl,
+	cliente(IdCliente,_,_,_,_,Ecivil),
+	hotel(Idhot,Nhotel,DirHotel,_,_,_,_,_,_),
+	registro(_,IdCliente,Idhot,_,_,_),
+	
+	Ecivil = 'casado',
+	
+	write('* Nombre Hotel: '),write(Nhotel),write(' - Direccion: '),write(DirHotel),write('.'),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 5------------------------'),
+	nl,
+	menu_reportes.
+	
+reporte_6:-nl,
+	write('Reporte 6 - Nombre de clientes extranjeros hospedados en departamentos de habla katchikel:'),
+	nl,nl,
+	cliente(IdCliente,Nombre,Apellido,Pais,_,_),
+	departamento(IDdep,_,_,Lenguaje,_),
+	hotel(Idhot,_,_,_,_,_,_,IDdep,_),
+	registro(_,IdCliente,Idhot,_,_,_),
+	
+	Pais \= 'guatemala',
+	Lenguaje = 'katchikel',
+	
+	
+	write('* Nombre: '),write(Nombre),write(' '),write(Apellido),write('.'),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 6------------------------'),
+	nl,
+	menu_reportes.
+	
+	
+reporte_7:-nl,
+	write('Reporte 7 - Nombre de Hotel, departamento, idioma y Nombre de clientes con opiniones mayores o igual que 7 y estadías mayores o igual a 3 días:'),
+	nl,nl,
+	cliente(IdCliente,Nombre,Apellido,_,_,_),
+	departamento(IDdep,Ndep,_,Lenguaje,_),
+	hotel(Idhot,Nhot,_,_,_,_,_,IDdep,_),
+	registro(_,IdCliente,Idhot,_,Estadia,Opinion),
+	
+	Estadia >= 3,
+	Opinion >= 7,
+	
+	
+	write('* Hotel: '),write(Nhot),write(' - Departamento: '),write(Ndep),write(' - Idioma: '),write(Lenguaje),write(' - Nombre Cliente: '),write(Nombre),write(' '),write(Apellido),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 7------------------------'),
+	nl,
+	menu_reportes.
+
+reporte_8:-nl,
+	write('Reporte 8 - Nombre País y Nombre de Hotel de clientes extranjeros hospedados en departamentos de habla ingles:'),
+	nl,nl,
+	cliente(IdCliente,Nombre,Apellido,Pais,_,_),
+	departamento(IDdep,_,_,Lenguaje,_),
+	hotel(Idhot,Nhot,_,_,_,_,_,IDdep,_),
+	registro(_,IdCliente,Idhot,_,_,_),
+	
+	Pais \= 'guatemala',
+	Lenguaje = 'ingles',
+	
+	
+	write('* Nombre: '),write(Nombre),write(' '),write(Apellido),write(' - Pais: '),write(Pais),write(' - Hotel: '),write(Nhot),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 8------------------------'),
+	nl,
+	menu_reportes.	
+	
+reporte_10:-nl,
+	write('Reporte 10 - Nombre de Hotel y dirección de hoteles que recibieron a clientes casados, que tengan opiniones mayores de 6 por personas con mínimo de 3 dias de estadia:'),
+	nl,nl,
+	cliente(IdCliente,_,_,_,_,Ecivil),
+	departamento(IDdep,_,_,_,_),
+	hotel(Idhot,Nhot,DirHotel,_,_,_,_,IDdep,_),
+	registro(_,IdCliente,Idhot,_,Estadia,Opinion),
+	
+	Ecivil = 'casado',
+	Opinion > 6,
+	Estadia >= 3,
+	
+	write('* Hotel: '),write(Nhot),write(' - Dirireccion Hotel: '),write(DirHotel),nl,
+	fail;
+	writeln('----------------------FIN REPORTE 10------------------------'),
+	nl,
+	menu_reportes.	
+	
 
 menu_presupuesto:-nl,
 	writeln('Ingrese el presupuesto que usted tiene para su viaje'),
@@ -1742,6 +1925,12 @@ menu_estrellas:-nl,
 	writeln('Ingrese el numero de estrellas del hotel que desea para su viaje:'),
 	read(ESTRELLAS),
 	camino_estrellas(ESTRELLAS),nl.
+	
+menu_clima:-nl,
+	writeln('Ingrese el clima deseado para su lugar de destino final que desea para su viaje:'),
+	write('tropical\ncalor\nfrio\ntemplado'),nl,
+	read(CLIMA),
+	camino_clima(CLIMA),nl.
 
 seleccionador_presupuesto(PRESUPUESTO):- (
 	PRESUPUESTO >= 5000 -> presupuestoMayor(PRESUPUESTO);
@@ -1824,6 +2013,21 @@ camino_estrellas(ESTRELLAS):-nl,
 	read(AUTO),
 	motordecisionesporestrellas(ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
 
+camino_clima(CLIMA):-nl,
+	writeln('Para cuantas personas es la reserva?'),
+	read(PERSONAS),
+	writeln('Cuantos tiempos de comida deseas realizar en el hotel?'),
+	read(TIEMPOS),
+	writeln('Cuantos dias deseas hospedarte?'),
+	read(DIASHOSPEDAJE),nl,
+	writeln('Que tipo de habitacion deseas para tu reserva?'),
+	writeln('1. Simple\n2. Doble\n'),
+	read(TIPOHABITACION),
+	writeln('Llegas en automovil? S/N'),
+	read(AUTO),
+	motordecisionesporclima(CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO).
+	
+	
 motordedecisionesmayor(PRESUPUESTO,ESTRELLAS,CHEF,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):- (
 	(CHEF == 's') -> inferenciaMayorConChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO);
 	(CHEF == 'n') -> inferenciaMayorSinChef(PRESUPUESTO,ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO)
@@ -1839,6 +2043,10 @@ motordecisionesporidioma(IDIOMA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITAC
 
 motordecisionesporestrellas(ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO):- (
 	inferenciaEstrellas(ESTRELLAS,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO)
+).
+
+motordecisionesporclima(CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO):- (
+	inferenciaClima(CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO)
 ).
 
 inferenciaMenor(PRESUPUESTO,CALIFICACION,DISTANCIA,CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHAB,AUTO):-
@@ -1952,6 +2160,27 @@ CLIMA == Cdep,
 mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, 'N/A').
 
 
+inferenciaClima(CLIMA,PERSONAS,TIEMPOS,DIASHOSPEDAJE,TIPOHABITACION,AUTO):-
+/*llamado de tablas*/
+departamento(IDdep,Ndep,_,_,Cdep),
+hotel(_,Nhotel,DirHotel,_,Hsimple,Hdoble,Pcomida,IDdep,Dhotel),
+
+/*operatoria */
+(AUTO == 'n' -> CostoGasolina is 0; AUTO == 's' -> CostoGasolina is Dhotel*12.50 * 2),
+(CostoComida is TIEMPOS * Pcomida * PERSONAS * DIASHOSPEDAJE),
+(TIPOHABITACION == 'simple' -> CostoHabitacion is Hsimple * PERSONAS * DIASHOSPEDAJE; TIPOHABITACION == 'doble' -> CostoHabitacion is Hdoble * PERSONAS * DIASHOSPEDAJE),
+
+(CostoTotal is CostoGasolina + CostoComida + CostoHabitacion),
+/*(AHORROS is PRESUPUESTO - CostoTotal),
+condiciones */
+
+CLIMA == Cdep,
+
+/*CostoTotal =< PRESUPUESTO,*/
+
+mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, 'N/A').
+
+
 mostrarinferencia(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, CostoComida, CostoTotal, AHORROS):-nl,
 	writeln('-----------------------------------'),
 	format('Segun los parametros ingresados, estas son las mejores ociones que
@@ -1985,3 +2214,5 @@ mostrarinferenciaMayor(Nhotel, Ndep, DirHotel, CostoGasolina, CostoHabitacion, C
 	write('Hasta pronto').
 
 /*Reporteria*/
+
+
