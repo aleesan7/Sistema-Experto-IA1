@@ -1773,137 +1773,150 @@ reporte_1:-nl,
   menu_reportes.
   
 reporte_2:-nl,
-	writeln('Reporte 2 - Nombre y estado civil de clientes con reservaciones en hoteles con mas de 4 estrellas: '),
-	write('|		Nombre			'),write('|	Estado civil	|'),
-	nl,
-	writeln('-----------------------------------------------------------'),
-	cliente(IdCliente,REP1_NOMBRE,REP1_APPELLIDO,_,_,Ecivil),
-	hotel(Idhot,_,_,Ehot,_,_,_,_,_),
-	registro(_,IdCliente,Idhot,_,_,_),
-	
-	Ehot > 4,
-	
-	write('|		'),write(REP1_NOMBRE),write(' '),write(REP1_APPELLIDO),write('			|	'),write(Ecivil),write('		 |'),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 2------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 2
+	--------------------------------------------------------------
+	Nombre |	Apellido	|	Estado Civil	|	Hotel	|	Estrellas	|
+	'),
+	cliente(IDc,Nc,Ac,_,_,ECc),
+	registro(_,IDc,IDh,_,_,_),
+	hotel(IDh,Nh,_,Eh,_,_,_,_,_),
+	Eh > 4,
+	format('~a	|	~a		|	~a		|	~a		|	~a		|
+	',[Nc,Ac,ECc,Nh,Eh]),
+	fail.
 	
 reporte_3:-nl,
-	 write('Reporte 3 - Nombre de Administradores en hoteles con valoraciones mayor o igual que 5:'),
-	nl,nl,
-	trabajador(IdTrab,REP4_NOMBRE,REP4_CARGO,REP4_HOTELID),
-	registro(_,_,REP4_HOTELID,_,_,REP4_OPINION),
-	IdTrab>0,
-	REP4_CARGO = 'administrador',
-	REP4_OPINION >= 5,
-	write('* Nombre: '),write(REP4_NOMBRE),write('.'),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 3------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 3
+	--------------------------------------------------------------
+	Administrador |	Hotel	|	Opinion	|
+	'),
+	trabajador(_,Nt,Ct,IDh),
+	hotel(IDh,Nh,_,_,_,_,_,_,_),
+	registro(_,_,IDh,_,_,Oreg),
+	Ct = 'administrador',
+	Oreg >= 5,
+	format('~a	|	~a		|	~a		|
+	',[Nt,Nh,Oreg]),
+	fail.
 	
 reporte_4:-nl,
-	/*write('Reporte 4 - Departamentos y hotel con más reservaciones:'),
-	nl,nl,
-	trabajador(IdTrab,REP4_NOMBRE,REP4_CARGO,REP4_HOTELID),
-	registro(_,_,REP4_HOTELID,_,_,REP4_OPINION),
-	IdTrab>0,
-	REP4_CARGO = 'administrador',
-	REP4_OPINION >= 5,
-	write('* Nombre: '),write(REP4_NOMBRE),write('.'),nl,
-	fail;*/
-	writeln('----------------------FIN REPORTE 4------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 4
+	--------------------------------------------------------------
+	Hotel |	Departamento	|	Clima	|
+	'),
+	departamento(IDd,Nd,_,_,Cd),
+	hotel(_,Nh,_,_,_,_,_,IDd,_),
+	Cd = 'calor',
+	format('~a	|	~a		|	~a		|
+	',[Nh,Nd,Cd]),
+	fail.
 	
 reporte_5:-nl,
-	write('Reporte 5 - Nombre y dirección de hoteles que recibieron a clientes casados:'),
-	nl,nl,
-	cliente(IdCliente,_,_,_,_,Ecivil),
-	hotel(Idhot,Nhotel,DirHotel,_,_,_,_,_,_),
-	registro(_,IdCliente,Idhot,_,_,_),
-	
-	Ecivil = 'casado',
-	
-	write('* Nombre Hotel: '),write(Nhotel),write(' - Direccion: '),write(DirHotel),write('.'),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 5------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 5
+	--------------------------------------------------------------
+	Nombre |	Apellido	|	Estado Civil	|	Hotel	|	Direccion	|		
+	'),
+	cliente(IDc,Nc,Ac,_,_,ECc),
+	hotel(IDh,Nh,Dh,_,_,_,_,_,_),
+	registro(_,IDc,IDh,_,_,_),
+	ECc = 'casado',
+	format('~a	|	~a		|	~a		|	~a		|	~a		|
+	',[Nc,Ac,ECc,Nh,Dh]),
+	fail.
 	
 reporte_6:-nl,
-	write('Reporte 6 - Nombre de clientes extranjeros hospedados en departamentos de habla katchikel:'),
-	nl,nl,
-	cliente(IdCliente,Nombre,Apellido,Pais,_,_),
-	departamento(IDdep,_,_,Lenguaje,_),
-	hotel(Idhot,_,_,_,_,_,_,IDdep,_),
-	registro(_,IdCliente,Idhot,_,_,_),
-	
-	Pais \= 'guatemala',
-	Lenguaje = 'katchikel',
-	
-	
-	write('* Nombre: '),write(Nombre),write(' '),write(Apellido),write('.'),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 6------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 6
+	--------------------------------------------------------------
+	Nombre |	Apellido	|	Pais	|	Departamento	|	Idioma	|		
+	'),
+	cliente(IDc,Nc,Ac,Pc,_,_),
+	registro(_,IDc,IDh,_,_,_),
+	hotel(IDh,_,_,_,_,_,_,IDd,_),
+	departamento(IDd,Nd,_,Ld,_),
+	Ld == 'katchikel',
+	Pc \= 'guatemala',
+	format('~a	|	~a		|	~a		|	~a		|	~a		|
+	',[Nc,Ac,Pc,Nd,Ld]),
+	fail.
 	
 	
 reporte_7:-nl,
-	write('Reporte 7 - Nombre de Hotel, departamento, idioma y Nombre de clientes con opiniones mayores o igual que 7 y estadías mayores o igual a 3 días:'),
-	nl,nl,
-	cliente(IdCliente,Nombre,Apellido,_,_,_),
-	departamento(IDdep,Ndep,_,Lenguaje,_),
-	hotel(Idhot,Nhot,_,_,_,_,_,IDdep,_),
-	registro(_,IdCliente,Idhot,_,Estadia,Opinion),
-	
-	Estadia >= 3,
-	Opinion >= 7,
-	
-	
-	write('* Hotel: '),write(Nhot),write(' - Departamento: '),write(Ndep),write(' - Idioma: '),write(Lenguaje),write(' - Nombre Cliente: '),write(Nombre),write(' '),write(Apellido),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 7------------------------'),
-	nl,
-	menu_reportes.
+	format('
+	--------------------------------------------------------------
+	Reporte 7
+	--------------------------------------------------------------
+	Hotel |	Departamento	|	Nombre	|	Apellido	|	Opinion	|	Estadia	|		
+	'),
+	cliente(IDc,Nc,Ac,_,_,_),
+	registro(_,IDc,IDh,_,Ereg,Oreg),
+	hotel(IDh,Nh,_,_,_,_,_,IDd,_),
+	departamento(IDd,Nd,_,_,_),
+	Oreg >= 7,
+	Ereg >= 3,
+	format('~a	|	~a		|	~a		|	~a		|	~a		|	~a		|
+	',[Nh,Nd,Nc,Ac,Oreg,Ereg]),
+	fail.
 
 reporte_8:-nl,
-	write('Reporte 8 - Nombre País y Nombre de Hotel de clientes extranjeros hospedados en departamentos de habla ingles:'),
-	nl,nl,
-	cliente(IdCliente,Nombre,Apellido,Pais,_,_),
-	departamento(IDdep,_,_,Lenguaje,_),
-	hotel(Idhot,Nhot,_,_,_,_,_,IDdep,_),
-	registro(_,IdCliente,Idhot,_,_,_),
-	
-	Pais \= 'guatemala',
-	Lenguaje = 'ingles',
-	
-	
-	write('* Nombre: '),write(Nombre),write(' '),write(Apellido),write(' - Pais: '),write(Pais),write(' - Hotel: '),write(Nhot),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 8------------------------'),
-	nl,
-	menu_reportes.	
+	format('
+	--------------------------------------------------------------
+	Reporte 8
+	--------------------------------------------------------------
+	Pais |	Hotel	|	Nombre	|	Apellido	|	Lenguaje	|		
+	'),
+	cliente(IDc,Nc,Ac,Pc,_,_),
+	registro(_,IDc,IDh,_,_,_),
+	hotel(IDh,Nh,_,_,_,_,_,IDd,_),
+	departamento(IDd,_,_,Ld,_),
+	Pc \= 'guatemala',
+	Ld == 'ingles',
+	format('~a	|	~a		|	~a		|	~a		|	~a		|
+	',[Pc,Nh,Nc,Ac,Ld]),
+	fail.	
+
+reporte_9:-nl,
+	format('
+	--------------------------------------------------------------
+	Reporte 9
+	--------------------------------------------------------------
+	Pais |	Departamento	|	
+	'),
+	cliente(IDc,_,_,Pc,_,_),
+	registro(_,IDc,IDh,_,_,_),
+	hotel(IDh,_,_,_,_,_,_,IDd,_),
+	departamento(IDd,Nd,_,_,_),
+	Nd == 'peten',
+	format('~a	|	~a		|
+	',[Pc,Nd]),
+	fail.
 	
 reporte_10:-nl,
-	write('Reporte 10 - Nombre de Hotel y dirección de hoteles que recibieron a clientes casados, que tengan opiniones mayores de 6 por personas con mínimo de 3 dias de estadia:'),
-	nl,nl,
-	cliente(IdCliente,_,_,_,_,Ecivil),
-	departamento(IDdep,_,_,_,_),
-	hotel(Idhot,Nhot,DirHotel,_,_,_,_,IDdep,_),
-	registro(_,IdCliente,Idhot,_,Estadia,Opinion),
-	
-	Ecivil = 'casado',
-	Opinion > 6,
-	Estadia >= 3,
-	
-	write('* Hotel: '),write(Nhot),write(' - Dirireccion Hotel: '),write(DirHotel),nl,
-	fail;
-	writeln('----------------------FIN REPORTE 10------------------------'),
-	nl,
-	menu_reportes.	
+	format('
+	--------------------------------------------------------------
+	Reporte 10
+	--------------------------------------------------------------
+	Hotel |	Direccion	|	Nombre	|	Apellido	|	Estado Civil	|	Opinion	|	Estadia	|
+	'),
+	cliente(IDc,Nc,Ac,_,_,ECc),
+	registro(_,IDc,IDh,_,Ereg,Oreg),
+	hotel(IDh,Nh,_,_,_,_,_,IDd,_),
+	departamento(IDd,Nd,_,_,_),
+	Oreg > 6,
+	Ereg >= 3,
+	ECc == 'casado',
+	format('~a	|	~a		|	~a		|	~a		|	~a		|	~a		|	~a		|
+	',[Nh,Nd,Nc,Ac,ECc,Oreg,Ereg]),
+	fail.	
 	
 
 menu_presupuesto:-nl,
